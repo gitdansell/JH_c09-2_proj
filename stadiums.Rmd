@@ -1,0 +1,43 @@
+---
+title: "Leaflet Map of Professional Sports Stadiums"
+author: D. Ansell
+date: 2025-04-14
+output:
+html_document:
+df_print: paged
+---
+
+```{r setoptions, echo=FALSE}
+knitr::opts_chunk$set(include=TRUE,
+                      results="show",
+                      message=FALSE,
+                      warning=FALSE
+                    )
+```
+
+```{r}
+library(leaflet)
+library(tidyverse)
+set.seed(1984)
+```
+
+
+```{r}
+# Load the data
+# https://www.kaggle.com/datasets/logandonaldson/sports-stadium-locations/data/stadiums.csv
+stads = read_csv(paste0(getwd(), "/../../temp/stadiums.csv"))
+stads$League = factor(stads$League)
+```
+
+```{r}
+map = leaflet(data=stads) |>
+      addTiles()  |>
+      addMarkers(
+        lat=stads$Lat,
+        lng=stads$Long,
+        popup=paste0(stads$Team, " - ", stads$League),
+        group=stads$League,
+        clusterOptions=markerClusterOptions()
+      ) 
+map
+```
